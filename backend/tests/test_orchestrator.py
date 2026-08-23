@@ -87,3 +87,21 @@ async def test_conversation_meta_questions_survive_out_of_scope_turns():
 
     assert "rather not guess" not in reply, f"fell back to the out-of-scope reply: {reply!r}"
     assert _done(events)["human_offered"] is False
+
+
+@pytest.mark.asyncio
+async def test_identity_question_is_answered_not_escalated():
+    """
+    "Who are you?" is about the assistant's own role, not store policy, so it will never
+    match the knowledge base - it scored 0.21 against a 0.30 threshold. Routed through RAG
+    grounding it could only ever fail, and used to produce the out-of-scope refusal.
+    """
+    session_id = str(uuid.uuid4())
+    events = await _collect(session_id, "who are you and what can you help me with?")
+    done = _done(events)
+    reply = "".join(p["text"] for e, p in events if e == "token").lower()
+
+    assert done["escalated"] is False
+    assert done["human_offered"] is False, "the bot knows its own role; no handoff needed"
+    assert "don't have that" not in reply, f"fell back to the refusal: {reply!r}"
+    assert "novacart" in reply
