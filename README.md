@@ -3,6 +3,11 @@
 A multi-turn, RAG-grounded e-commerce customer support chatbot. FastAPI + Groq backend,
 React + assistant-ui frontend, streamed over Server-Sent Events.
 
+
+## Video Demo
+
+[Watch the video demo](https://drive.google.com/file/d/1xFhWuw7FTOzmVuuOBIRFFafddzG0Y1Z0/view?usp=sharing)
+
 ## Architecture
 
 ```
